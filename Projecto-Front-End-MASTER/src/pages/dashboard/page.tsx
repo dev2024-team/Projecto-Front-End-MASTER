@@ -16,7 +16,7 @@ const Dashboard = () => {
         localStorage.removeItem('token');
 
         // Redireciona o usuário para a página de login
-        router.push('/login');
+        router.push('/signin/page');
     }
 
 
@@ -31,15 +31,15 @@ const Dashboard = () => {
 
         if (decodedToken.exp < currentTime) {
           // Token expirado, redirecionar para login
-          router.push('/login');
+          router.push('/signin/page');
         }
       } catch (error) {
         console.error('Erro ao decodificar o token:', error);
-        router.push('/login');
+        router.push('/signin/page');
       }
     } else {
       // Não há token, redirecionar para login
-      router.push('/login');
+      router.push('/signin/page');
     }
   }, [router]);
 
@@ -61,7 +61,7 @@ const Dashboard = () => {
 
             {/* Grid layout para os CustomBox components */}
             <div className="grid grid-cols-2 gap-10">
-                <CustomBox text='Retorno de Usuario' url='/estudante' />
+                <CustomBox text='Retorno de Usuario' url='/user/' />
                 <CustomBox text='Cadastro' url='/addUsers' />
                 <CustomBox text='Adicionar Roles' url='/estudante' />
                 <CustomBox text='Diverso' url='/estudante' />

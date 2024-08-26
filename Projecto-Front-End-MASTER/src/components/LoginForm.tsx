@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
+
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -8,7 +9,8 @@ const LoginForm = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('/api/login', {
+      
+      const response = await fetch('../api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,7 +21,7 @@ const LoginForm = () => {
       if (response.ok) {
         const { access_token } = await response.json();
         localStorage.setItem('token', access_token);
-        router.push('/dashboard');
+        router.push('/dashboard/page');
         console.log('Token de Acesso de Login: ', access_token);
       } else {
         alert('Falha no login: credenciais inválidas.');

@@ -1,5 +1,5 @@
 // pages/api/login.js
-export default async function handler(req, res) {
+export default async function handlerLogin(req, res) {
     if (req.method === 'POST') {
       const { email, password } = req.body;
   
@@ -21,4 +21,5 @@ export default async function handler(req, res) {
       res.status(405).json({ message: 'Method not allowed' });
     }
   }
+
   

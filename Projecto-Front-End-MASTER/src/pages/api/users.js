@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+export default async function handlerUser(req, res) {
   const { method } = req;
   const { id, name, email, password } = req.body;
   const authorizationHeader = req.headers.authorization;

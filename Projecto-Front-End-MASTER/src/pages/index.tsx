@@ -16,7 +16,7 @@ export default function Home() {
 
   const linkLogin = function(){
     return(
-      <Link href="/login" className="text-blue-500 hover:underline">
+      <Link href="/signin/page" className="text-blue-500 hover:underline">
       Ir para o login
     </Link>
     )
@@ -89,7 +89,7 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
+          <h2 className={`mb-3 text-2xl font-semibold`}>z
             Learn{" "}
             <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
               -&gt;
