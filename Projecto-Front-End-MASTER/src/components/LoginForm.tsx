@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/context/auth/AuthContext';
+import login from '../pages/api/login'
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -10,7 +11,7 @@ const LoginForm = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('/api/login', {
+      const response = await fetch('../api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

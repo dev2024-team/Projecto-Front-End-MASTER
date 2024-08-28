@@ -1,7 +1,7 @@
 // src/context/UserContext.tsx
 
 import React, { createContext, useReducer, ReactNode, useContext, useEffect } from 'react';
-import { userReducer, initialState, UserState, User } from '../reducers/userReducer';
+import { userReducer, initialState, UserState, User } from '../../reducers/userReducer';
 
 interface UserContextProps {
   state: UserState;

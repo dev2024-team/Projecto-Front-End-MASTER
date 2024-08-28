@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from 'react';
-import AddUserForm from "@/components/addUserForm"; // Certifique-se que o caminho está correto
+import AddUserForm from "@/components/user/addUserForm"; // Certifique-se que o caminho está correto
 
 const AddEstudante = () => {
     return (

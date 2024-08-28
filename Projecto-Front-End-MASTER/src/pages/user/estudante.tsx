@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from 'react';
-import UserTable from "@/components/UserTable";
+import UserTable from "@/components/user/UserTable";
 
 const HomePage = () => {
     return (
