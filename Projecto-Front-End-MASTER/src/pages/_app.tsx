@@ -1,6 +1,13 @@
-import "@/styles/globals.css";
-import type { AppProps } from "next/app";
+import 'bootstrap/dist/css/bootstrap.min.css'; // Importando o Bootstrap CSS
+import { AuthProvider } from '@/context/AuthContext';
+import { ReactNode } from 'react';
 
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+function MyApp({ Component, pageProps }: { Component: React.ElementType; pageProps: any }) {
+  return (
+    <AuthProvider>
+      <Component {...pageProps} />
+    </AuthProvider>
+  );
 }
+
+export default MyApp;

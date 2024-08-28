@@ -7,7 +7,7 @@ const AddEstudante = () => {
         <div className="container mx-auto">
             <h1 className="text-2xl font-bold text-center my-8">Adicionar Usuário</h1>
             <div className="w-20 h-10 m-7 bg-sky-600 text-white flex justify-center items-center">
-                <Link href="/dashboard">
+                <Link href="/dashboard/page">
                     Voltar
                 </Link>
             </div>

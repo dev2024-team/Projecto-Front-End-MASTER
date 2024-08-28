@@ -61,10 +61,10 @@ const Dashboard = () => {
 
             {/* Grid layout para os CustomBox components */}
             <div className="grid grid-cols-2 gap-10">
-                <CustomBox text='Retorno de Usuario' url='/user/' />
-                <CustomBox text='Cadastro' url='/addUsers' />
-                <CustomBox text='Adicionar Roles' url='/estudante' />
-                <CustomBox text='Diverso' url='/estudante' />
+                <CustomBox text='Retorno de Usuario' url='/user/estudante' />
+                <CustomBox text='Cadastro' url='/user/addUsers' />
+                <CustomBox text='Adicionar Roles' url='/user/estudante' />
+                <CustomBox text='Diverso' url='/user/estudante' />
             </div>
         </div>
     );

@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-
+import { useAuth } from '@/context/AuthContext';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const { dispatch } = useAuth();
 
   const handleLogin = async () => {
     try {
-      
-      const response = await fetch('../api/login', {
+      const response = await fetch('/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -20,9 +20,9 @@ const LoginForm = () => {
 
       if (response.ok) {
         const { access_token } = await response.json();
-        localStorage.setItem('token', access_token);
+        dispatch({ type: 'LOGIN', token: access_token });
+        localStorage.setItem('token', access_token);  // Salva o token no localStorage
         router.push('/dashboard/page');
-        console.log('Token de Acesso de Login: ', access_token);
       } else {
         alert('Falha no login: credenciais inválidas.');
       }
@@ -46,7 +46,6 @@ const LoginForm = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="mt-1 block w-full p-2 border rounded"
-          style={{ color: '#000000' }}
           required
         />
       </div>
@@ -58,7 +57,6 @@ const LoginForm = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="mt-1 block w-full p-2 border rounded"
-          style={{ color: '#000000' }}
           required
         />
       </div>
