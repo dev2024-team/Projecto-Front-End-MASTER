@@ -1,13 +1,17 @@
 import 'bootstrap/dist/css/bootstrap.min.css'; // Importando o Bootstrap CSS
 import { AuthProvider } from '@/context/auth/AuthContext';
-import { ReactNode } from 'react';
+import '../styles/globals.css';
+import { ReactElement, ReactNode } from 'react';
+import { AppProps } from 'next/app';
 
-function MyApp({ Component, pageProps }: { Component: React.ElementType; pageProps: any }) {
-  return (
-    <AuthProvider>
-      <Component {...pageProps} />
-    </AuthProvider>
-  );
+type NextPageWithLayout = AppProps['Component'] & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+function MyApp({ Component, pageProps }: AppProps) {
+  const getLayout = (Component as NextPageWithLayout).getLayout || ((page) => page);
+
+  return getLayout(<Component {...pageProps} />);
 }
 
 export default MyApp;

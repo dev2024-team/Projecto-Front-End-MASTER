@@ -1,7 +1,8 @@
+// src/components/LoginForm.tsx
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/context/auth/AuthContext';
-import login from '../pages/api/login'
+import { login } from '@/services/authService';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -11,22 +12,10 @@ const LoginForm = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('../api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (response.ok) {
-        const { access_token } = await response.json();
-        dispatch({ type: 'LOGIN', token: access_token });
-        localStorage.setItem('token', access_token);  // Salva o token no localStorage
-        router.push('/dashboard/page');
-      } else {
-        alert('Falha no login: credenciais inválidas.');
-      }
+      const access_token = await login(email, password);
+      dispatch({ type: 'LOGIN', token: access_token });
+      localStorage.setItem('token', access_token);
+      router.push('/painel');
     } catch (error) {
       alert('Erro ao tentar conectar-se ao servidor.');
     }

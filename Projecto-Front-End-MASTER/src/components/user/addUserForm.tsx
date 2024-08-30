@@ -1,9 +1,10 @@
+// src/components/UserRegistration.tsx
 import React, { useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';
-import Router, { useRouter } from 'next/router';
+import {jwtDecode} from 'jwt-decode';
+import { useRouter } from 'next/router';
+import { userService } from '@/services/userService';
 
 const UserRegistration: React.FC = () => {
-  const [users, setUsers] = useState<Array<{ id: string; name: string; password: string; email: string; dataCriada: string }>>([]);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,51 +15,22 @@ const UserRegistration: React.FC = () => {
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
-    const currentTime = Math.floor(Date.now() / 1000); 
-    console.log(storedToken);
-    
+    const currentTime = Math.floor(Date.now() / 1000);
+
     if (storedToken) {
       const decodedToken: any = jwtDecode(storedToken);
-      console.log('Token Exp: ',decodedToken.exp,', Data Atual: ',currentTime);
-      
-      
 
       if (decodedToken.exp < currentTime) {
-        // Token expirado
-        alert('A sua sessao expirou');
+        alert('A sua sessão expirou');
         localStorage.removeItem('token');
-        router.push('/login');
+        router.push('/signin');
       } else {
         setToken(storedToken);
-        fetchUsers(storedToken);
-        
-        
       }
     } else {
-      router.push('/login');
+      router.push('/signin');
     }
   }, [router]);
-
-  const fetchUsers = async (storedToken: string) => {
-    try {
-      const response = await fetch('/api/users', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${storedToken}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Falha na autenticação');
-      }
-
-      const data = await response.json();
-      setUsers(data);
-    } catch (error) {
-      console.error('Erro ao buscar os usuários:', error);
-      router.push('/login');
-    }
-  };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,26 +43,14 @@ const UserRegistration: React.FC = () => {
     }
 
     try {
-      const response = await fetch('/api/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Usando o token armazenado
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      if (response.ok) {
-        setSuccess('Usuário cadastrado com sucesso!');
-        setName('');
-        setEmail('');
-        setPassword('');
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || 'Erro ao cadastrar usuário');
-      }
+      const newUser = { name, email, password };
+      await userService.addUser(newUser, token);
+      setSuccess('Usuário cadastrado com sucesso!');
+      setName('');
+      setEmail('');
+      setPassword('');
     } catch (error) {
-      setError('Erro de conexão ou servidor');
+     // setError(error.message);
     }
   };
 

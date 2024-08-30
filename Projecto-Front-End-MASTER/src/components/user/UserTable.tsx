@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from 'next/router';
+import { userService } from '@/services/userService';
 
 const UserTable = () => {
   const [users, setUsers] = useState<Array<{ id: string; name: string; password: string; email: string; dataCriada: string }>>([]);
@@ -10,46 +11,32 @@ const UserTable = () => {
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
-    const currentTime = Math.floor(Date.now() / 1000); 
-    console.log(storedToken);
+    const currentTime = Math.floor(Date.now() / 1000);
     
     if (storedToken) {
       const decodedToken: any = jwtDecode(storedToken);
-      console.log('Token Exp: ',decodedToken.exp,', Data Atual: ',currentTime);
       
       if (decodedToken.exp < currentTime) {
         // Token expirado
-        alert('A sua sessao expirou');
+        alert('A sua sessão expirou');
         localStorage.removeItem('token');
-        router.push('/login');
+        router.push('/signin');
       } else {
         setToken(storedToken);
         fetchUsers(storedToken);
-           
       }
     } else {
-      router.push('/login');
+      router.push('/signin');
     }
   }, [router]);
 
   const fetchUsers = async (storedToken: string) => {
     try {
-      const response = await fetch('/api/users', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${storedToken}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Falha na autenticação');
-      }
-
-      const data = await response.json();
+      const data = await userService.fetchUsers(storedToken);
       setUsers(data);
     } catch (error) {
       console.error('Erro ao buscar os usuários:', error);
-      router.push('/login');
+      router.push('/signin');
     }
   };
 
@@ -57,20 +44,10 @@ const UserTable = () => {
     if (!token) return;
 
     try {
-      const response = await fetch(`/api/users`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        alert('Usuario Removido com sucesso')
-        setUsers(users.filter(user => user.id !== id));
-        setSelectedUser(null);
-      } else {
-        console.error('Erro ao deletar usuário');
-      }
+      await userService.deleteUser(id, token);
+      alert('Usuário removido com sucesso');
+      setUsers(users.filter(user => user.id !== id));
+      setSelectedUser(null);
     } catch (error) {
       console.error('Erro ao deletar usuário:', error);
     }
@@ -83,23 +60,13 @@ const UserTable = () => {
   const handleUpdate = async () => {
     if (!token || !selectedUser) return;
 
+    const { id, name, email, password } = selectedUser;
+    console.log('Dados de Usuario: ',id, name, email, password, token);
     try {
-      const response = await fetch(`/api/users`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(selectedUser),
-      });
-
-      if (response.ok) {
-        const updatedUser = await response.json();
-        setUsers(users.map(user => user.id === updatedUser.id ? updatedUser : user));
-        setSelectedUser(null);
-      } else {
-        console.error('Erro ao atualizar usuário, verifique a entrada de dados');
-      }
+      const updatedUser = await userService.editUser(id, { name, email, password }, token);  
+      setUsers(users.map(user => user.id === updatedUser.id ? updatedUser : user));
+      setSelectedUser(null);
+      alert('Usuário atualizado com sucesso');
     } catch (error) {
       console.error('Erro ao atualizar usuário:', error);
     }
@@ -107,15 +74,14 @@ const UserTable = () => {
 
   return (
     <div className="overflow-x-auto">
-      
       <table className="min-w-full bg-white border">
         <thead className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
           <tr>
-            <th className="py-3 px-6 text-left">id</th>
-            <th className="py-3 px-6 text-left">name</th>
-            <th className="py-3 px-6 text-left">password</th>
-            <th className="py-3 px-6 text-left">email</th>
-            <th className="py-3 px-6 text-left">dataCriada</th>
+            <th className="py-3 px-6 text-left">ID</th>
+            <th className="py-3 px-6 text-left">Name</th>
+            <th className="py-3 px-6 text-left">Password</th>
+            <th className="py-3 px-6 text-left">Email</th>
+            <th className="py-3 px-6 text-left">Data Criada</th>
             <th className="py-3 px-6 text-left">Actions</th>
           </tr>
         </thead>
@@ -141,7 +107,7 @@ const UserTable = () => {
           ) : (
             <tr>
               <td colSpan={6} className="py-3 px-6 text-center">
-                A procucar dados de usuarios
+                Nenhum usuário encontrado
               </td>
             </tr>
           )}
